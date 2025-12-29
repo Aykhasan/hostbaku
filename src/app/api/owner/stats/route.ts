@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
       'SELECT id FROM properties WHERE owner_id = $1',
       [userId]
     );
-    const propertyIds = propertiesResult.rows.map(p => p.id);
+    const propertyIds = propertiesResult.map(p => p.id);
 
     if (propertyIds.length === 0) {
       return NextResponse.json({
@@ -77,9 +77,9 @@ export async function GET(request: NextRequest) {
       `SELECT COUNT(*) as count FROM property_units WHERE property_id = ANY($1)`,
       [propertyIds]
     );
-    const totalUnits = parseInt(unitsResult.rows[0]?.count || '1');
+    const totalUnits = parseInt(unitsResult[0]?.count || '1');
     const totalAvailableDays = totalUnits * daysInYear;
-    const occupiedDays = parseInt(occupiedDaysResult.rows[0]?.days || '0');
+    const occupiedDays = parseInt(occupiedDaysResult[0]?.days || '0');
     const occupancyRate = totalAvailableDays > 0 ? Math.round((occupiedDays / totalAvailableDays) * 100) : 0;
 
     // Upcoming reservations count
@@ -101,8 +101,8 @@ export async function GET(request: NextRequest) {
       [propertyIds]
     );
 
-    const totalRevenue = parseFloat(revenueResult.rows[0]?.total || '0');
-    const totalExpenses = parseFloat(expensesResult.rows[0]?.total || '0');
+    const totalRevenue = parseFloat(revenueResult[0]?.total || '0');
+    const totalExpenses = parseFloat(expensesResult[0]?.total || '0');
 
     return NextResponse.json({
       success: true,
@@ -112,8 +112,8 @@ export async function GET(request: NextRequest) {
         netIncome: totalRevenue - totalExpenses,
         occupancyRate,
         propertyCount: propertyIds.length,
-        upcomingReservations: parseInt(upcomingResult.rows[0]?.count || '0'),
-        openTickets: parseInt(ticketsResult.rows[0]?.count || '0'),
+        upcomingReservations: parseInt(upcomingResult[0]?.count || '0'),
+        openTickets: parseInt(ticketsResult[0]?.count || '0'),
       }
     });
   } catch (error) {

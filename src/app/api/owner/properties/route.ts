@@ -32,7 +32,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: result.rows.map(row => ({
+      data: result.map(row => ({
         ...row,
         unit_count: parseInt(row.unit_count),
         active_reservations: parseInt(row.active_reservations),

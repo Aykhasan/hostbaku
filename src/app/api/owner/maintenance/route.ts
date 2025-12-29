@@ -63,7 +63,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: result.rows
+      data: result
     });
   } catch (error) {
     console.error('Error fetching maintenance tickets:', error);
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
       [property_id, userId]
     );
 
-    if (propertyCheck.rows.length === 0) {
+    if (propertyCheck.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Property not found or access denied' },
         { status: 403 }
@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: result.rows[0]
+      data: result[0]
     }, { status: 201 });
   } catch (error) {
     console.error('Error creating maintenance ticket:', error);

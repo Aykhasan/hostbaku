@@ -52,7 +52,7 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: result.rows.map(row => ({
+      data: result.map(row => ({
         ...row,
         total_revenue: parseFloat(row.total_revenue),
         total_expenses: parseFloat(row.total_expenses),

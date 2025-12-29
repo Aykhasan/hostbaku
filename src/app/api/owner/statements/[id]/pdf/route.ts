@@ -41,14 +41,14 @@ export async function GET(
 
     const statementResult = await query(sql, params_arr);
 
-    if (statementResult.rows.length === 0) {
+    if (statementResult.length === 0) {
       return NextResponse.json(
         { success: false, error: 'Statement not found' },
         { status: 404 }
       );
     }
 
-    const statement = statementResult.rows[0];
+    const statement = statementResult[0];
     const statementDate = new Date(statement.statement_date);
     const year = statementDate.getFullYear();
     const month = statementDate.getMonth();
@@ -102,11 +102,11 @@ export async function GET(
         net_income: parseFloat(statement.net_income),
         management_fee: parseFloat(statement.management_fee),
       },
-      reservations: reservationsResult.rows.map(r => ({
+      reservations: reservationsResult.map(r => ({
         ...r,
         total_price: parseFloat(r.total_price),
       })),
-      expenses: expensesResult.rows.map(e => ({
+      expenses: expensesResult.map(e => ({
         ...e,
         amount: parseFloat(e.amount),
       })),
