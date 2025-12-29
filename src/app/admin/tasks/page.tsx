@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { ClipboardList, Plus, Calendar, User, Building2, Filter, Search, Eye, CheckCircle, Clock } from 'lucide-react';
 import { DashboardLayout, Modal, LoadingSpinner, EmptyState, TaskStatusBadge, TaskTypeBadge, useToast } from '@/components/ui';
 import { Task, Property, PropertyUnit, User as UserType } from '@/lib/types';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 
 interface TaskWithDetails extends Task {
   property_name?: string;
@@ -78,7 +78,7 @@ export default function TasksPage() {
     unit_id: '',
     task_type: 'turnover' as 'turnover' | 'deep_clean' | 'inspection' | 'maintenance',
     assigned_to: '',
-    scheduled_date: format(new Date(), 'yyyy-MM-dd'),
+    due_date: format(new Date(), 'yyyy-MM-dd'),
     notes: ''
   });
   const [saving, setSaving] = useState(false);
@@ -158,11 +158,19 @@ export default function TasksPage() {
     }
     setSaving(true);
     try {
+      const taskTypeTitles: Record<string, string> = {
+        turnover: 'Turnover Clean',
+        deep_clean: 'Deep Clean',
+        inspection: 'Inspection',
+        maintenance: 'Maintenance'
+      };
+
       const res = await fetch('/api/admin/tasks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           ...formData,
+          title: taskTypeTitles[formData.task_type] || 'Task',
           checklist: DEFAULT_CHECKLISTS[formData.task_type].map(item => ({ item, completed: false }))
         })
       });
@@ -174,7 +182,7 @@ export default function TasksPage() {
           unit_id: '',
           task_type: 'turnover',
           assigned_to: '',
-          scheduled_date: format(new Date(), 'yyyy-MM-dd'),
+          due_date: format(new Date(), 'yyyy-MM-dd'),
           notes: ''
         });
         fetchTasks();
@@ -337,7 +345,7 @@ export default function TasksPage() {
                       <td>
                         <div className="flex items-center gap-1 text-sm">
                           <Calendar className="w-4 h-4 text-gray-400" />
-                          {format(new Date(task.scheduled_date), 'MMM d, yyyy')}
+                          {task.due_date ? format(typeof task.due_date === 'string' ? parseISO(task.due_date) : new Date(task.due_date), 'MMM d, yyyy') : 'No date'}
                         </div>
                       </td>
                       <td>
@@ -424,8 +432,8 @@ export default function TasksPage() {
               <input
                 type="date"
                 required
-                value={formData.scheduled_date}
-                onChange={(e) => setFormData({ ...formData, scheduled_date: e.target.value })}
+                value={formData.due_date}
+                onChange={(e) => setFormData({ ...formData, due_date: e.target.value })}
                 className="input"
               />
             </div>
@@ -482,7 +490,7 @@ export default function TasksPage() {
                 </div>
                 <div>
                   <label className="text-sm text-gray-500">Scheduled</label>
-                  <p className="font-medium">{format(new Date(selectedTask.scheduled_date), 'MMM d, yyyy')}</p>
+                  <p className="font-medium">{selectedTask.due_date ? format(typeof selectedTask.due_date === 'string' ? parseISO(selectedTask.due_date) : new Date(selectedTask.due_date), 'MMM d, yyyy') : 'No date'}</p>
                 </div>
                 <div>
                   <label className="text-sm text-gray-500">Assigned To</label>
