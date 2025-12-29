@@ -1,29 +1,17 @@
-import type { Metadata, Viewport } from 'next';
-import './globals.css';
+'use client';
 
-export const metadata: Metadata = {
-  title: 'HostBaku - Property Management',
-  description: 'Professional Airbnb property management in Baku, Azerbaijan',
-  icons: {
-    icon: '/favicon.ico',
-  },
-};
+import { AuthProvider, ToastProvider } from '@/components/ui';
 
-export const viewport: Viewport = {
-  width: 'device-width',
-  initialScale: 1,
-  maximumScale: 1,
-  themeColor: '#267a54',
-};
-
-export default function RootLayout({
+export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className="font-sans antialiased">{children}</body>
-    </html>
+    <AuthProvider>
+      <ToastProvider>
+        {children}
+      </ToastProvider>
+    </AuthProvider>
   );
 }
