@@ -141,8 +141,9 @@ export default function ReservationsPage() {
 
   const getReservationsForDay = (date: Date) => {
     return reservations.filter(r => {
-      const checkIn = parseISO(r.check_in);
-      const checkOut = parseISO(r.check_out);
+      // Handle both Date objects and string dates from API
+      const checkIn = typeof r.check_in === 'string' ? parseISO(r.check_in) : new Date(r.check_in);
+      const checkOut = typeof r.check_out === 'string' ? parseISO(r.check_out) : new Date(r.check_out);
       return isWithinInterval(date, { start: checkIn, end: checkOut }) || isSameDay(date, checkIn) || isSameDay(date, checkOut);
     });
   };
@@ -304,7 +305,7 @@ export default function ReservationsPage() {
                       <div className="flex items-center gap-4 text-sm text-gray-500 mt-2">
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3" />
-                          {format(parseISO(r.check_in), 'MMM d')} - {format(parseISO(r.check_out), 'MMM d')}
+                          {format(typeof r.check_in === 'string' ? parseISO(r.check_in) : new Date(r.check_in), 'MMM d')} - {format(typeof r.check_out === 'string' ? parseISO(r.check_out) : new Date(r.check_out), 'MMM d')}
                         </span>
                         <span className="flex items-center gap-1">
                           <DollarSign className="w-3 h-3" />
