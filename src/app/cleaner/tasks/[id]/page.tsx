@@ -168,11 +168,24 @@ export default function CleanerTaskDetailPage({
     }
   };
 
-  const handlePhotoUpload = async (photos: string[]) => {
+  const handlePhotoUpload = async (files: FileList) => {
     if (!task) return;
 
     setUploadingPhotos(true);
     try {
+      // Convert FileList to base64 strings
+      const photos: string[] = [];
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        const base64 = await new Promise<string>((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onload = () => resolve(reader.result as string);
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
+        photos.push(base64);
+      }
+
       const res = await fetch(`/api/cleaner/tasks/${params.id}/photos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -189,6 +202,11 @@ export default function CleanerTaskDetailPage({
     } finally {
       setUploadingPhotos(false);
     }
+  };
+
+  const handlePhotoRemove = (index: number) => {
+    if (!task || !task.photos[index]) return;
+    deletePhoto(task.photos[index].id);
   };
 
   const deletePhoto = async (photoId: string) => {
@@ -356,10 +374,11 @@ export default function CleanerTaskDetailPage({
         <div className="p-4">
           {task.status !== 'done' && (
             <PhotoUpload
+              photos={task.photos.map(p => p.url)}
               onUpload={handlePhotoUpload}
+              onRemove={handlePhotoRemove}
               maxPhotos={12}
-              currentCount={task.photos.length}
-              uploading={uploadingPhotos}
+              loading={uploadingPhotos}
             />
           )}
           
