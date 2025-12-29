@@ -117,7 +117,7 @@ export async function GET(
       'July', 'August', 'September', 'October', 'November', 'December'];
     const filename = `Statement_${statement.property_name.replace(/\s+/g, '_')}_${monthNames[month]}_${year}.pdf`;
 
-    return new NextResponse(pdfBuffer, {
+    return new NextResponse(new Uint8Array(pdfBuffer), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="${filename}"`,
