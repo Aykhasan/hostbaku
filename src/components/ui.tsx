@@ -508,3 +508,4 @@ export function PhotoUpload({ photos, onUpload, onRemove, maxPhotos = 12, loadin
     </div>
   );
 }
+
