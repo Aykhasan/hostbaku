@@ -13,6 +13,14 @@ const nextConfig = {
       bodySizeLimit: '10mb',
     },
   },
+  webpack: (config) => {
+    // Ensure ui.tsx is resolved before ui directory
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      '@/components/ui': require('path').resolve(__dirname, 'src/components/ui.tsx'),
+    };
+    return config;
+  },
 };
 
 module.exports = nextConfig;
