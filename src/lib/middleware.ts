@@ -137,3 +137,21 @@ export async function canAccessTask(
   
   return false;
 }
+
+// Verify authentication and return user or error
+export async function verifyAuth(
+  request: NextRequest,
+  allowedRoles?: UserRole[]
+): Promise<{ user: User } | { error: string; status: number }> {
+  const { user, error } = await authenticateRequest(request);
+  
+  if (error || !user) {
+    return { error: error || 'Unauthorized', status: 401 };
+  }
+  
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return { error: 'Forbidden: Insufficient permissions', status: 403 };
+  }
+  
+  return { user };
+}
