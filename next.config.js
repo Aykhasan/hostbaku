@@ -15,9 +15,11 @@ const nextConfig = {
   },
   webpack: (config) => {
     // Ensure ui.tsx is resolved before ui directory
+    const path = require('path');
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@/components/ui': require('path').resolve(__dirname, 'src/components/ui.tsx'),
+      '@/components/ui': path.resolve(__dirname, 'src/components/ui.tsx'),
+      '@': path.resolve(__dirname, 'src'),
     };
     return config;
   },
