@@ -149,8 +149,9 @@ export default function ReservationsPage() {
   };
 
   const getReservationStyle = (reservation: ReservationWithDetails, date: Date) => {
-    const checkIn = parseISO(reservation.check_in);
-    const checkOut = parseISO(reservation.check_out);
+    // Handle both Date objects and string dates from API
+    const checkIn = typeof reservation.check_in === 'string' ? parseISO(reservation.check_in) : new Date(reservation.check_in);
+    const checkOut = typeof reservation.check_out === 'string' ? parseISO(reservation.check_out) : new Date(reservation.check_out);
     const isCheckIn = isSameDay(date, checkIn);
     const isCheckOut = isSameDay(date, checkOut);
     
@@ -314,10 +315,10 @@ export default function ReservationsPage() {
                       </div>
                     </div>
                     <div className="text-right">
-                      {isSameDay(parseISO(r.check_in), selectedDate) && (
+                      {isSameDay(typeof r.check_in === 'string' ? parseISO(r.check_in) : new Date(r.check_in), selectedDate) && (
                         <Badge variant="success">Check-in</Badge>
                       )}
-                      {isSameDay(parseISO(r.check_out), selectedDate) && (
+                      {isSameDay(typeof r.check_out === 'string' ? parseISO(r.check_out) : new Date(r.check_out), selectedDate) && (
                         <Badge variant="danger">Check-out</Badge>
                       )}
                     </div>
