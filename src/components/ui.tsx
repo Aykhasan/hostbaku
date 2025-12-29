@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, createContext, useContext, ReactNode } from 'react';
+import React, { useState, useEffect, createContext, useContext, ReactNode } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import Link from 'next/link';
 import {
@@ -347,18 +347,31 @@ export function Modal({ isOpen, onClose, title, children, size = 'md' }: ModalPr
 
 // Empty state component
 interface EmptyStateProps {
-  icon?: ReactNode;
+  icon?: React.ComponentType<{ className?: string }> | ReactNode;
   title: string;
   description: string;
   action?: ReactNode;
 }
 
 export function EmptyState({ icon, title, description, action }: EmptyStateProps) {
+  const renderIcon = () => {
+    if (!icon) return null;
+    
+    // Check if it's a component (function or has render method)
+    if (typeof icon === 'function' || (icon && typeof icon === 'object' && '$$typeof' in icon)) {
+      const IconComponent = icon as React.ComponentType<{ className?: string }>;
+      return <IconComponent className="w-12 h-12" />;
+    }
+    
+    // Otherwise, render as ReactNode
+    return icon;
+  };
+
   return (
     <div className="text-center py-12">
       {icon && (
-        <div className="mx-auto w-12 h-12 text-stone-300 mb-4">
-          {icon}
+        <div className="mx-auto w-12 h-12 text-stone-300 mb-4 flex items-center justify-center">
+          {renderIcon()}
         </div>
       )}
       <h3 className="text-lg font-medium text-stone-900 mb-1">{title}</h3>
