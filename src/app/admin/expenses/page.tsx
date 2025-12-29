@@ -215,7 +215,15 @@ export default function ExpensesPage() {
             icon={Receipt}
             title={expenses.length === 0 ? 'No expenses yet' : 'No matching expenses'}
             description={expenses.length === 0 ? 'Record your first expense' : 'Try adjusting your filters'}
-            action={expenses.length === 0 ? { label: 'Record Expense', onClick: () => setShowCreateModal(true) } : undefined}
+            action={expenses.length === 0 ? (
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition"
+              >
+                <Plus className="w-4 h-4" />
+                Record Expense
+              </button>
+            ) : undefined}
           />
         ) : (
           <div className="card p-0 overflow-hidden">

@@ -181,7 +181,15 @@ export default function PropertiesPage() {
             icon={Building2}
             title="No properties yet"
             description="Add your first property to get started"
-            action={{ label: 'Add Property', onClick: () => setShowCreateModal(true) }}
+            action={
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition"
+              >
+                <Plus className="w-4 h-4" />
+                Add Property
+              </button>
+            }
           />
         ) : (
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

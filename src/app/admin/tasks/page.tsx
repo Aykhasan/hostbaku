@@ -291,7 +291,15 @@ export default function TasksPage() {
             icon={ClipboardList}
             title={tasks.length === 0 ? 'No tasks yet' : 'No matching tasks'}
             description={tasks.length === 0 ? 'Create your first task to get started' : 'Try adjusting your filters'}
-            action={tasks.length === 0 ? { label: 'New Task', onClick: () => setShowCreateModal(true) } : undefined}
+            action={tasks.length === 0 ? (
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="inline-flex items-center gap-2 px-4 py-2 bg-brand-600 text-white rounded-lg hover:bg-brand-700 transition"
+              >
+                <Plus className="w-4 h-4" />
+                New Task
+              </button>
+            ) : undefined}
           />
         ) : (
           <div className="card p-0 overflow-hidden">
