@@ -318,10 +318,13 @@ export default function PropertiesPage() {
                     <div>
                       <div className="font-medium">{unit.unit_number || 'Main Unit'}</div>
                       <div className="text-sm text-gray-500">
-                        {unit.bedrooms} bed · {unit.bathrooms} bath · {unit.max_guests} guests
+                        {unit.floor !== null ? `Floor ${unit.floor}` : 'Ground floor'}
+                        {unit.notes && ` · ${unit.notes}`}
                       </div>
                     </div>
-                    <Badge variant="neutral">${unit.cleaning_fee} clean</Badge>
+                    <Badge variant={unit.is_active ? 'success' : 'neutral'}>
+                      {unit.is_active ? 'Active' : 'Inactive'}
+                    </Badge>
                   </div>
                 ))}
               </div>
