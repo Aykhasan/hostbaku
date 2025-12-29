@@ -114,11 +114,11 @@ export async function POST(request: NextRequest) {
     );
 
     await createAuditLog({
-      userId,
+      user_id: userId,
       action: 'create',
-      entityType: 'maintenance_ticket',
-      entityId: ticketId,
-      newValues: { property_id, title, description, priority },
+      entity_type: 'maintenance_ticket',
+      entity_id: ticketId,
+      new_values: { property_id, title, description, priority },
     });
 
     // Fetch the created ticket
