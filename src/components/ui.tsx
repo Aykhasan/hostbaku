@@ -53,7 +53,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const refreshUser = async () => {
     try {
-      const res = await fetch('/api/auth/me');
+      // In development, check for dev role in URL or cookie
+      let url = '/api/auth/me';
+      if (process.env.NODE_ENV === 'development' && typeof window !== 'undefined') {
+        const urlParams = new URLSearchParams(window.location.search);
+        const devRole = urlParams.get('dev') || document.cookie.split('; ').find(row => row.startsWith('dev-role='))?.split('=')[1];
+        if (devRole) {
+          url += `?dev=${devRole}`;
+        }
+      }
+      
+      const res = await fetch(url);
       const data = await res.json();
       if (data.success && data.user) {
         setUser(data.user);

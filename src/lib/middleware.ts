@@ -23,9 +23,57 @@ export function getTokenFromRequest(request: NextRequest): string | null {
   return null;
 }
 
+// Development mode: Create mock users for testing
+function getDevMockUser(role: 'admin' | 'cleaner' | 'owner'): User {
+  const mockUsers: Record<string, User> = {
+    admin: {
+      id: 'dev-admin-1',
+      email: 'admin@test.com',
+      name: 'Dev Admin',
+      role: 'admin',
+      phone: '+1234567890',
+      is_active: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    cleaner: {
+      id: 'dev-cleaner-1',
+      email: 'cleaner@test.com',
+      name: 'Dev Cleaner',
+      role: 'cleaner',
+      phone: '+1234567891',
+      is_active: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+    owner: {
+      id: 'dev-owner-1',
+      email: 'owner@test.com',
+      name: 'Dev Owner',
+      role: 'owner',
+      phone: '+1234567892',
+      is_active: true,
+      created_at: new Date(),
+      updated_at: new Date(),
+    },
+  };
+  return mockUsers[role] || mockUsers.admin;
+}
+
 export async function authenticateRequest(
   request: NextRequest
 ): Promise<{ user: User | null; error: string | null }> {
+  // Development mode: Check for dev query parameter or cookie
+  if (process.env.NODE_ENV === 'development') {
+    const url = new URL(request.url);
+    const devRole = url.searchParams.get('dev') || request.cookies.get('dev-role')?.value;
+    
+    if (devRole && ['admin', 'cleaner', 'owner'].includes(devRole)) {
+      const mockUser = getDevMockUser(devRole as 'admin' | 'cleaner' | 'owner');
+      return { user: mockUser, error: null };
+    }
+  }
+  
   const token = getTokenFromRequest(request);
   
   if (!token) {
